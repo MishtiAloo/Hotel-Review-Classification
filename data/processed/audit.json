@@ -1,0 +1,160 @@
+{
+  "source": "dataset/HRAST.csv",
+  "source_sha256": "63ff5d81c2b21ec2a25bfcc23eede9eb6ee1334f0df99bdcdcd89ab2161ed06d",
+  "seed": 42,
+  "raw_rows": 23113,
+  "clean_rows": 23095,
+  "unnamed_columns_removed": [
+    "Unnamed: 2"
+  ],
+  "malformed_rows_quarantined": 5,
+  "matching_duplicate_extras_removed": 11,
+  "conflicting_duplicate_groups_quarantined": 1,
+  "aspect_flag_mismatches": 20233,
+  "rejected_records": [
+    {
+      "id": 4557,
+      "review": "Free parking in front of the hotel.",
+      "reasons": [
+        "sentiment columns do not contain exactly one 1"
+      ]
+    },
+    {
+      "id": 4634,
+      "review": "Friendly staff , clean and great extras.",
+      "reasons": [
+        "Location is not binary: 'σ'"
+      ]
+    },
+    {
+      "id": 11602,
+      "review": "Room is basic but spotless clean and comfortable, overlooking a busy square but we couldn’t hear a sound once the balcony door was closed.",
+      "reasons": [
+        "sentiment columns do not contain exactly one 1"
+      ]
+    },
+    {
+      "id": 15917,
+      "review": "The kitchenette is very practical but could be a little more equipped (kettle, coffee machine).",
+      "reasons": [
+        "sentiment columns do not contain exactly one 1"
+      ]
+    },
+    {
+      "id": 18969,
+      "review": "The staff at the front desk (made the impression that they were students to me) were friendly and tried hard, but not entirely professional.",
+      "reasons": [
+        "sentiment columns do not contain exactly one 1"
+      ]
+    },
+    {
+      "id": 13869,
+      "review": "The bathroom had an unpleasant odor coming.",
+      "reasons": [
+        "duplicate review has conflicting labels"
+      ]
+    },
+    {
+      "id": 13870,
+      "review": "The bathroom had an unpleasant odor coming.",
+      "reasons": [
+        "duplicate review has conflicting labels"
+      ]
+    }
+  ],
+  "splits": {
+    "train": {
+      "rows": 16159,
+      "sentiment_counts": {
+        "positive": 8258,
+        "negative": 7347,
+        "neutral": 554
+      },
+      "aspect_counts": {
+        "Clean": 2046,
+        "Comfort": 1791,
+        "Facilities/Amenities": 2045,
+        "Location": 3309,
+        "Restaurant (dinner)": 210,
+        "Staff": 2659,
+        "View (Balcony)": 548,
+        "Breakfast": 1777,
+        "Room": 3502,
+        "Pool": 330,
+        "Beach": 132,
+        "Bathroom/Shower (toilet)": 1639,
+        "Bar": 225,
+        "Bed": 1036,
+        "Parking": 378,
+        "Noise": 1122,
+        "Reception-checkin": 667,
+        "Lift": 203,
+        "Value for money": 624,
+        "Wi-Fi": 187,
+        "Generic": 1381
+      }
+    },
+    "validation": {
+      "rows": 3467,
+      "sentiment_counts": {
+        "positive": 1775,
+        "negative": 1574,
+        "neutral": 118
+      },
+      "aspect_counts": {
+        "Clean": 438,
+        "Comfort": 384,
+        "Facilities/Amenities": 438,
+        "Location": 695,
+        "Restaurant (dinner)": 45,
+        "Staff": 569,
+        "View (Balcony)": 118,
+        "Breakfast": 381,
+        "Room": 750,
+        "Pool": 71,
+        "Beach": 28,
+        "Bathroom/Shower (toilet)": 351,
+        "Bar": 49,
+        "Bed": 222,
+        "Parking": 81,
+        "Noise": 241,
+        "Reception-checkin": 143,
+        "Lift": 44,
+        "Value for money": 134,
+        "Wi-Fi": 40,
+        "Generic": 296
+      }
+    },
+    "test": {
+      "rows": 3469,
+      "sentiment_counts": {
+        "positive": 1775,
+        "negative": 1575,
+        "neutral": 119
+      },
+      "aspect_counts": {
+        "Clean": 439,
+        "Comfort": 383,
+        "Facilities/Amenities": 439,
+        "Location": 723,
+        "Restaurant (dinner)": 45,
+        "Staff": 570,
+        "View (Balcony)": 117,
+        "Breakfast": 381,
+        "Room": 751,
+        "Pool": 71,
+        "Beach": 28,
+        "Bathroom/Shower (toilet)": 351,
+        "Bar": 48,
+        "Bed": 222,
+        "Parking": 81,
+        "Noise": 240,
+        "Reception-checkin": 143,
+        "Lift": 43,
+        "Value for money": 133,
+        "Wi-Fi": 40,
+        "Generic": 296
+      }
+    }
+  }
+}

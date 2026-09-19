@@ -1,0 +1,16 @@
+# Shared, intentionally small training configuration.
+base_model: bert-base-uncased
+max_length: 128
+seed: 42
+epochs: 5
+learning_rate: 0.00002
+weight_decay: 0.01
+warmup_ratio: 0.10
+train_batch_size: 32
+eval_batch_size: 64
+gradient_accumulation_steps: 1
+fp16: true
+max_grad_norm: 1.0
+early_stopping_patience: 2
+positive_weight_cap: 20.0
+
