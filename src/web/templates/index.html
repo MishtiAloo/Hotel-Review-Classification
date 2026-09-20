@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Review Classifier</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="page">
+    <h1>Hotel Review Classifier</h1>
+    <p class="subtitle">
+      Enter one hotel-review sentence to see its overall sentiment and the
+      hotel aspects it mentions.
+    </p>
+
+    <form method="POST" class="review-form">
+      <label for="review">Review sentence</label>
+      <textarea
+        id="review"
+        name="review"
+        rows="4"
+        maxlength="2000"
+        placeholder="{{ example_sentence }}"
+      >{{ review_text }}</textarea>
+      <button type="submit">Classify</button>
+    </form>
+
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+
+    {% if result %}
+      <section class="result">
+        <h2>Sentiment</h2>
+        <p class="sentiment-label sentiment-{{ result.sentiment.label }}">
+          {{ result.sentiment.label }}
+          <span class="confidence">({{ (result.sentiment.confidence * 100) | round(1) }}% confidence)</span>
+        </p>
+        <ul class="score-list">
+          {% for label, score in result.sentiment.scores.items() %}
+            <li>
+              <span class="score-name">{{ label }}</span>
+              <span class="score-bar">
+                <span class="score-bar-fill" style="width: {{ (score * 100) | round(1) }}%"></span>
+              </span>
+              <span class="score-value">{{ (score * 100) | round(1) }}%</span>
+            </li>
+          {% endfor %}
+        </ul>
+
+        <h2>Detected aspects</h2>
+        {% if result.aspects %}
+          <ul class="aspect-list">
+            {% for aspect in result.aspects %}
+              <li class="aspect-badge">
+                {{ aspect.label }}
+                <span class="aspect-score">{{ (aspect.score * 100) | round(1) }}%</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="no-aspects">No aspect passed the configured threshold.</p>
+        {% endif %}
+
+        <p class="note">
+          Note: this sentiment is for the whole sentence, not separately for
+          each detected aspect.
+        </p>
+      </section>
+    {% endif %}
+  </main>
+</body>
+</html>

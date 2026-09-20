@@ -1,0 +1,162 @@
+/* Small, dependency-free responsive layout for the review classifier. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #f4f5f7;
+  color: #1f2430;
+}
+
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+h1 {
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  color: #555b6e;
+  margin-top: 0;
+}
+
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: white;
+  padding: 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+textarea {
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+}
+
+button {
+  align-self: flex-start;
+  padding: 0.6rem 1.4rem;
+  font-size: 1rem;
+  background: #2a5bd7;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1f47ad;
+}
+
+.error {
+  color: #b3261e;
+  font-weight: bold;
+}
+
+.result {
+  margin-top: 2rem;
+  background: white;
+  padding: 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sentiment-label {
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.sentiment-positive {
+  color: #1a7f37;
+}
+
+.sentiment-negative {
+  color: #b3261e;
+}
+
+.sentiment-neutral {
+  color: #7a7f87;
+}
+
+.confidence {
+  font-size: 1rem;
+  font-weight: normal;
+  color: #555b6e;
+}
+
+.score-list {
+  list-style: none;
+  padding: 0;
+}
+
+.score-list li {
+  display: grid;
+  grid-template-columns: 90px 1fr 60px;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+  text-transform: capitalize;
+}
+
+.score-bar {
+  background: #e3e5ea;
+  border-radius: 4px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  display: block;
+  height: 100%;
+  background: #2a5bd7;
+}
+
+.score-value {
+  text-align: right;
+  color: #555b6e;
+}
+
+.aspect-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.aspect-badge {
+  background: #eef1fb;
+  color: #2a3a8f;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+}
+
+.aspect-score {
+  color: #555b6e;
+  margin-left: 0.25rem;
+}
+
+.no-aspects {
+  color: #555b6e;
+  font-style: italic;
+}
+
+.note {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #7a7f87;
+}
