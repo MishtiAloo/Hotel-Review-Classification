@@ -8,3 +8,12 @@ __pycache__/
 # Generated models and run logs can be recreated.
 artifacts/*/
 logs/*.log
+
+# Trained model weights are far above GitHub's 100 MB file limit. Share them
+# through a GitHub Release / Hugging Face / Kaggle instead of committing them.
+hotel_models/
+inference_app/models/
+*.safetensors
+*.pt
+*.bin
+plots/
