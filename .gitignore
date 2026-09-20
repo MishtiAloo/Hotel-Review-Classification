@@ -17,3 +17,4 @@ inference_app/models/
 *.pt
 *.bin
 plots/
+*.zip
