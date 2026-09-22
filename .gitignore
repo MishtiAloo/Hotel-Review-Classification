@@ -18,3 +18,5 @@ inference_app/models/
 *.bin
 plots/
 *.zip
+venv/
+log/

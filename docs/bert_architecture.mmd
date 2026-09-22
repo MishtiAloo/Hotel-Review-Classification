@@ -1,0 +1,49 @@
+%%{init: {"theme":"base","themeVariables":{"primaryTextColor":"#000000","secondaryTextColor":"#000000","tertiaryTextColor":"#000000","lineColor":"#000000","fontFamily":"Arial","fontSize":"24px"},"flowchart":{"curve":"linear","htmlLabels":true}}}%%
+flowchart TB
+    subgraph INPUT["1. Input representation"]
+        direction LR
+        TXT["Review text<br/>one sentence"]:::gray
+        TOK["WordPiece tokenizer<br/>[CLS] tokens [SEP]<br/>IDs and mask: B x L<br/>L <= 128"]:::cyan
+        EMB["Token + position + segment embeddings<br/>B x L x 768"]:::orange
+        TXT --> TOK --> EMB
+    end
+
+    subgraph ENC["2. One BERT-base Transformer block, repeated 12 times"]
+        direction LR
+        QKV["Q, K, V projections<br/>B x 12 x L x 64"]:::yellow
+        ATT["Scaled self-attention<br/>softmax(QK^T / sqrt(64))V"]:::purple
+        CAT["Concatenate heads<br/>and output projection<br/>B x L x 768"]:::green
+        AN1["Residual + LayerNorm<br/>B x L x 768"]:::pink
+        FFN["Feed-forward + GELU<br/>768 -> 3072 -> 768"]:::red
+        AN2["Residual + LayerNorm<br/>B x L x 768"]:::cyan
+        QKV --> ATT --> CAT --> AN1 --> FFN --> AN2
+    end
+
+    subgraph OUTPUT["3. Sequence representation and task-specific outputs"]
+        direction LR
+        CLS["Final [CLS] / pooled output<br/>h_CLS: B x 768"]:::gray
+        COPY{"Two separately fine-tuned<br/>encoder copies"}:::yellow
+        SHEAD["Sentiment head<br/>W_s: 3 x 768, b_s: 3<br/>logits: B x 3"]:::orange
+        AHEAD["Aspect head<br/>W_a: 21 x 768, b_a: 21<br/>logits: B x 21"]:::pink
+        SOFT["Softmax<br/>one of 3 sentiments"]:::cyan
+        SIG["21 sigmoids<br/>zero or more aspects"]:::green
+        CLS --> COPY
+        COPY --> SHEAD --> SOFT
+        COPY --> AHEAD --> SIG
+    end
+
+    INPUT --> ENC
+    ENC -->|"repeat through block 12"| OUTPUT
+
+    classDef gray fill:#E0E0E0,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef cyan fill:#97ECF8,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef orange fill:#FFD0AC,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef red fill:#FFA0A0,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef yellow fill:#FFF17B,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef purple fill:#ACA7FF,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef green fill:#A4FFA1,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef pink fill:#F4C5FF,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    style INPUT fill:#E0E0E0,color:#000000,stroke:#000000,stroke-width:1.5px;
+    style ENC fill:#E0E0E0,color:#000000,stroke:#000000,stroke-width:1.5px;
+    style OUTPUT fill:#E0E0E0,color:#000000,stroke:#000000,stroke-width:1.5px;
+    linkStyle default stroke:#000000,stroke-width:1.5px;

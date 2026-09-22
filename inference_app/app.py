@@ -18,12 +18,27 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 MAX_LENGTH = 128
 
+# 12 examples: 3 positive, 3 negative, 3 neutral, each group with 2 sentences
+# that mention a clear aspect and 1 that mentions no specific aspect at all;
+# plus 3 mixed-opinion sentences that do not cleanly belong to one sentiment,
+# to show the model's one-sentiment-per-sentence limitation.
 EXAMPLE_SENTENCES = [
-    "The staff were friendly and the room was spotless.",
-    "The Wi-Fi was slow and the room was noisy.",
-    "Breakfast was poor but the staff were excellent.",
+    # positive
+    "The staff were incredibly friendly and helpful throughout our stay.",
+    "Breakfast was delicious and the room was spotless.",
+    "Overall, we had a wonderful time and would definitely come back.",
+    # negative
+    "The Wi-Fi kept dropping and the room was freezing cold.",
+    "The bathroom was dirty and smelled terrible.",
+    "Honestly, I regret booking this place at all.",
+    # neutral
     "The hotel is located three kilometres from the airport.",
-    "The pool was dirty and the lift was broken.",
+    "There is a lift to the third floor.",
+    "We stayed for two nights in October.",
+    # mixed opinion (does not cleanly belong to one sentiment)
+    "Breakfast was poor but the staff were excellent.",
+    "Great location, but very noisy at night.",
+    "The pool was amazing but the parking was outrageously expensive.",
 ]
 
 THIS_FOLDER = Path(__file__).resolve().parent
@@ -40,8 +55,7 @@ def find_models_folder():
     if os.environ.get("HOTEL_MODELS_DIR"):
         places_to_look.append(Path(os.environ["HOTEL_MODELS_DIR"]))
 
-    # 2. inference_app/models, 3. artifacts, 4. the folder made by unzipping hotel_models.zip.
-    places_to_look.append(THIS_FOLDER / "models")
+    # 2. artifacts, 3. the folder made by unzipping hotel_models.zip.
     places_to_look.append(PROJECT_FOLDER / "artifacts")
     places_to_look.append(PROJECT_FOLDER / "hotel_models" / "artifacts")
 
@@ -143,8 +157,9 @@ st.write("Type one hotel review sentence. The two BERT models will find its **se
 models_folder = find_models_folder()
 if models_folder is None:
     st.error("Could not find the trained models.")
-    st.write("Put the `sentiment` and `aspects` folders inside `inference_app/models/`, "
-             "or set the environment variable `HOTEL_MODELS_DIR` to the folder that contains them.")
+    st.write("Put the `sentiment` and `aspects` folders inside `artifacts/` or "
+             "`hotel_models/artifacts/` in the project root, or set the environment "
+             "variable `HOTEL_MODELS_DIR` to the folder that contains them.")
     st.stop()
 
 with st.spinner("Loading models (only the first time)..."):
@@ -152,8 +167,6 @@ with st.spinner("Loading models (only the first time)..."):
 
 # Sidebar: information and the one setting you can change.
 st.sidebar.header("Settings")
-st.sidebar.write("Models folder:")
-st.sidebar.code(str(models_folder))
 st.sidebar.write("Running on:", str(models["device"]).upper())
 threshold = st.sidebar.slider(
     "Aspect threshold", min_value=0.05, max_value=0.95,

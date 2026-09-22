@@ -1,0 +1,52 @@
+%%{init: {"theme":"base","themeVariables":{"primaryTextColor":"#000000","secondaryTextColor":"#000000","tertiaryTextColor":"#000000","lineColor":"#000000","fontFamily":"Arial","fontSize":"24px"},"flowchart":{"curve":"linear","htmlLabels":true}}}%%
+flowchart TB
+    subgraph BOOT["1. Application startup, executed once"]
+        direction LR
+        START["Start Streamlit demo"]:::gray
+        FIND{"Find both model folders?"}:::yellow
+        ERR["No: show configuration<br/>error and stop"]:::red
+        LOAD["Yes: load two tokenizers + models<br/>choose CUDA else CPU<br/>cache the resource"]:::cyan
+        TH["Load global threshold<br/>from thresholds.json<br/>fallback 0.50"]:::purple
+        START --> FIND
+        FIND --> ERR
+        FIND --> LOAD --> TH
+    end
+
+    subgraph REQUEST["2. Collect and validate a request"]
+        direction LR
+        INPUT["Choose example or enter review<br/>optional threshold slider"]:::orange
+        VALID{"Non-empty text?"}:::yellow
+        WARN["No: ask user to<br/>enter a review"]:::red
+        READY["Yes: accept trimmed text<br/>and selected threshold"]:::green
+        INPUT --> VALID
+        VALID --> WARN
+        VALID --> READY
+    end
+
+    subgraph PREDICT["3. Run both frozen classifiers"]
+        direction LR
+        TOK["Tokenize twice<br/>truncate to 128 tokens<br/>move tensors to device"]:::cyan
+        SM["Sentiment BERT<br/>3 logits"]:::orange
+        AM["Aspect BERT<br/>21 logits"]:::pink
+        SP["Softmax + argmax<br/>label, confidence, scores"]:::green
+        AP["Independent sigmoids<br/>threshold and sort aspects"]:::green
+        TOK --> SM --> SP
+        TOK --> AM --> AP
+    end
+
+    UI["4. Render sentiment badge + bar chart<br/>aspect progress bars + optional all-aspect chart"]:::purple
+
+    BOOT --> REQUEST --> PREDICT --> UI
+
+    classDef gray fill:#E0E0E0,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef cyan fill:#97ECF8,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef orange fill:#FFD0AC,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef red fill:#FFA0A0,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef yellow fill:#FFF17B,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef purple fill:#ACA7FF,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef green fill:#A4FFA1,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef pink fill:#F4C5FF,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    style BOOT fill:#E0E0E0,color:#000000,stroke:#000000,stroke-width:1.5px;
+    style REQUEST fill:#E0E0E0,color:#000000,stroke:#000000,stroke-width:1.5px;
+    style PREDICT fill:#E0E0E0,color:#000000,stroke:#000000,stroke-width:1.5px;
+    linkStyle default stroke:#000000,stroke-width:1.5px;

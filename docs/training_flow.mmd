@@ -1,0 +1,56 @@
+%%{init: {"theme":"base","themeVariables":{"primaryTextColor":"#000000","secondaryTextColor":"#000000","tertiaryTextColor":"#000000","lineColor":"#000000","fontFamily":"Arial","fontSize":"24px"},"flowchart":{"curve":"linear","htmlLabels":true}}}%%
+flowchart TB
+    subgraph PREP["1. Clean and split the HRAST data"]
+        direction LR
+        RAW["HRAST.csv<br/>23,113 raw rows"]:::gray
+        CLEAN["Normalize review text<br/>validate 24 binary targets<br/>require one sentiment<br/>resolve duplicate reviews"]:::cyan
+        DATA["23,095 clean reviews<br/>3 sentiment flags<br/>21 aspect flags"]:::green
+        SPLIT["Iterative multilabel split, seed 42<br/>train 16,227<br/>validation 3,441<br/>test 3,427"]:::yellow
+        RAW --> CLEAN --> DATA --> SPLIT
+    end
+
+    subgraph INPUTS["2. Prepare model inputs once"]
+        direction LR
+        TOK["Shared BERT tokenizer<br/>WordPiece IDs<br/>truncate to L <= 128"]:::cyan
+        CACHE["Cache ID lists for all splits<br/>training average 14.5 tokens<br/>1 review reaches length 128"]:::orange
+        BATCH["Manual shuffle and batching<br/>dynamic pad to batch maximum<br/>build attention mask<br/>batch 16 / evaluation 32"]:::purple
+        TOK --> CACHE --> BATCH
+    end
+
+    subgraph TRAIN["3. Fine-tune two independent models for five epochs"]
+        direction LR
+        SM["Sentiment BERT classifier<br/>pooled 768 -> 3 logits<br/>cross-entropy"]:::orange
+        AM["Aspect BERT classifier<br/>pooled 768 -> 21 logits<br/>BCE with logits"]:::pink
+        STEP["zero_grad -> forward -> loss<br/>backward -> AdamW step<br/>learning rate 2e-5"]:::red
+        VAL["Manual validation metrics<br/>if macro-F1 improves, copy encoder + head<br/>into standard Hugging Face classifier<br/>save weights, tokenizer, semantic labels"]:::yellow
+        SM --> STEP
+        AM --> STEP
+        STEP --> VAL
+    end
+
+    subgraph FINAL["4. Select threshold, test, and package"]
+        direction LR
+        RELOAD["Reload best standard checkpoints<br/>into custom classifiers"]:::gray
+        SWEEP["Aspect validation sweep<br/>0.20 to 0.80 by 0.05<br/>best global threshold 0.30"]:::cyan
+        TEST["Final held-out test<br/>sentiment and aspect metrics<br/>plus confusion matrices"]:::orange
+        PACK["Save metrics and thresholds.json<br/>standard-model reload smoke test<br/>create hotel_models.zip"]:::green
+        RELOAD --> SWEEP --> TEST --> PACK
+    end
+
+    PREP --> INPUTS --> TRAIN
+    TRAIN -->|"next epoch"| TRAIN
+    TRAIN -->|"after epoch 5"| FINAL
+
+    classDef gray fill:#E0E0E0,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef cyan fill:#97ECF8,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef orange fill:#FFD0AC,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef red fill:#FFA0A0,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef yellow fill:#FFF17B,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef purple fill:#ACA7FF,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef green fill:#A4FFA1,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    classDef pink fill:#F4C5FF,color:#000000,stroke:#000000,stroke-width:1.5px,font-size:22px;
+    style PREP fill:#E0E0E0,color:#000000,stroke:#000000,stroke-width:1.5px;
+    style INPUTS fill:#E0E0E0,color:#000000,stroke:#000000,stroke-width:1.5px;
+    style TRAIN fill:#E0E0E0,color:#000000,stroke:#000000,stroke-width:1.5px;
+    style FINAL fill:#E0E0E0,color:#000000,stroke:#000000,stroke-width:1.5px;
+    linkStyle default stroke:#000000,stroke-width:1.5px;

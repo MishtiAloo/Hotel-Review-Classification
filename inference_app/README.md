@@ -17,9 +17,8 @@ Your browser opens at <http://localhost:8501>. Stop with `Ctrl+C`.
 `sentiment/` and `aspects/`:
 
 1. the folder named in the environment variable `HOTEL_MODELS_DIR`
-2. `inference_app/models/`
-3. `artifacts/` (project root)
-4. `hotel_models/artifacts/` (what you get by unzipping `hotel_models.zip` in the project root)
+2. `artifacts/` (project root)
+3. `hotel_models/artifacts/` (what you get by unzipping `hotel_models.zip` in the project root)
 
 If you unzipped in the project root, nothing else is needed.
 
